@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI System - Products</title>
+</head>
+<body>
+    <h1>BI System - Products</h1>
+    <form id="productsForm">
+        <label for="columns">Columns:</label>
+        <select id="columns" name="columns">
+            <option value="productID">Product ID</option>
+            <option value="category">Category</option>
+            <option value="sub_category">Sub-Category</option>
+            <option value="stock">Stock</option>
+            <!-- Add more options for other columns as needed -->
+        </select>
+        <br>
+        <label for="criteria">Criteria:</label>
+        <input type="text" id="criteria" name="criteria" placeholder="Enter criteria">
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="productsData"></div>
+
+    <script>
+        document.getElementById('productsForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const columns = document.getElementById('columns').value;
+            const criteria = document.getElementById('criteria').value;
+
+            // Construct the API endpoint URL with query parameters
+            let apiUrl = '/api/products';
+            if (columns) {
+                apiUrl += `?columns=${encodeURIComponent(columns)}`;
+            }
+            if (criteria) {
+                apiUrl += `&criteria=${encodeURIComponent(criteria)}`;
+            }
+
+            // Make a GET request to the API endpoint
+            fetch(apiUrl)
+                .then(response => response.json())  // Parse the JSON response
+                .then(data => {
+                    // Once the JSON data is received, render it on the page
+                    document.getElementById('productsData').innerHTML = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
