@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>BI System - Products</h1>
-    <form id="productsForm">
+    <form id="dataForm">
         <label for="columns">Columns:</label>
         <select id="columns" name="columns" multiple>
             <option value="productID">Product ID</option>
@@ -21,27 +21,36 @@
         <label for="criteriaConstraint">Value:</label>
         <input type="text" id="criteriaConstraint" name="criteriaConstraint" placeholder="Enter the constraint">
         <br>
+        <label for="table">Select table:</label>
+        <select id="table" name="table">
+            <option value="inventory">Inventory</option>
+            <option value="SALES">Sales</option>
+            <option value="customers">Customers</option>
+        </select>
         <button type="submit">Submit</button>
     </form>
     <div id="productsData"></div>
 
     <script>
-        document.getElementById('productsForm').addEventListener('submit', function(event) {
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission behavior
-
+    
             const columnsSelect = document.getElementById('columns');
             const selectedColumns = [...columnsSelect.selectedOptions].map(option => option.value)
             
             const criteriaColumn = document.getElementById('criteriaColumn').value;
             const criteriaConstraint = document.getElementById('criteriaConstraint').value;
+            const table = document.getElementById('table').value; // Get the table name from the form
+            console.log(table)
+            
             // Construct the API endpoint URL with query parameters
-            let apiUrl = '/api/products?columns=' + encodeURIComponent(selectedColumns.join(','));
+            let apiUrl = `/api/mydata?columns=${encodeURIComponent(selectedColumns.join(','))}&table=${encodeURIComponent(table)}`;
+            
             if (criteriaColumn && criteriaConstraint) {
-                //apiUrl += `&${encodeURIComponent(criteriaColumn)}=${encodeURIComponent(criteriaConstraint)}`;
                 apiUrl += `&criteriaColumn=${encodeURIComponent(criteriaColumn)}&criteriaConstraint=${encodeURIComponent(criteriaConstraint)}`;
-
             }
-
+            console.log(apiUrl)
+    
             // Make a GET request to the API endpoint
             fetch(apiUrl)
                 .then(response => response.json())  // Parse the JSON response
