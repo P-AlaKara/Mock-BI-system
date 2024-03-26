@@ -7,7 +7,15 @@
 </head>
 <body>
     <h1>BI System - Products</h1>
-    <form id="dataForm">
+    <div id="select_table">
+        <select id="table_select">
+            <option value="inventory">Inventory</option>
+            <option value="SALES">Sales</option>
+            <option value="customers">Customers</option>
+        </select>
+    </div>
+    <!--PRODUCTS FORM-->
+    <form id="productsForm">
         <label for="columns">Columns:</label>
         <select id="columns" name="columns" multiple>
             <option value="productID">Product ID</option>
@@ -21,35 +29,102 @@
         <label for="criteriaConstraint">Value:</label>
         <input type="text" id="criteriaConstraint" name="criteriaConstraint" placeholder="Enter the constraint">
         <br>
-        <label for="table">Select table:</label>
-        <select id="table" name="table">
-            <option value="inventory">Inventory</option>
-            <option value="SALES">Sales</option>
-            <option value="customers">Customers</option>
+        <button type="submit">Submit</button>
+    </form>
+    <!--SALES FORM-->
+    <form id="salesForm">
+        <label for="columns">Columns:</label>
+        <select id="columns" name="columns" multiple>
+            <option value="saleID">ID</option>
+            <option value="date_sold">Date sold</option>
+            <option value="productID">Product ID</option>
+            <option value="category">Category</option>
+            <option value="price">Price</option>
+            <option value="quantity">Quantity</option>
+            <option value="payment_method">Payment Method</option>
         </select>
+        <br>
+        <label for="criteriaColumn">Criteria:</label>
+        <input type="text" id="criteriaColumn" name="criteriaColumn" placeholder="Enter criteria column">
+        <label for="criteriaConstraint">Value:</label>
+        <input type="text" id="criteriaConstraint" name="criteriaConstraint" placeholder="Enter the constraint">
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <!--CUSTOMERS FORM-->
+    <form id="customersForm">
+        <label for="columns">Columns:</label>
+        <select id="columns" name="columns" multiple>
+            <option value="customer_id">ID</option>
+            <option value="customer_name">Name</option>
+            <option value="age">Age</option>
+            <option value="segment">Segment</option>
+        </select>
+        <br>
+        <label for="criteriaColumn">Criteria:</label>
+        <input type="text" id="criteriaColumn" name="criteriaColumn" placeholder="Enter criteria column">
+        <label for="criteriaConstraint">Value:</label>
+        <input type="text" id="criteriaConstraint" name="criteriaConstraint" placeholder="Enter the constraint">
+        <br>
         <button type="submit">Submit</button>
     </form>
     <div id="productsData"></div>
+    <!--INSERTING DATA-->
+    <h1>Insert Product</h1>
+    <form id="insertProductForm">
+        <label for="productID">Product ID:</label>
+        <input type="text" id="productID" name="productID" required>
+        <br>
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required>
+        <br>
+        <label for="subCategory">Sub-Category:</label>
+        <input type="text" id="subCategory" name="subCategory" required>
+        <br>
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" required>
+        <br>
+        <button type="submit">Insert Product</button>
+    </form>
 
     <script>
-        document.getElementById('dataForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission behavior
+        //show different forms according to table selection
+        const tableSelect = document.getElementById('table_select');
+        const productsForm = document.getElementById('productsForm');
+        const salesForm = document.getElementById('salesForm');
+        const customersForm = document.getElementById('customersForm');
+
+        tableSelect.addEventListener('change', function() {
+            const selectedTable = tableSelect.value;
+
+            productsForm.style.display = 'none';
+            salesForm.style.display = 'none';
+            customersForm.style.display = 'none';
+
+            if (selectedTable === 'inventory') {
+            productsForm.style.display = 'block';
+            } else if (selectedTable === 'SALES') {
+            salesForm.style.display = 'block';
+            } else if (selectedTable === 'customers') {
+            customersForm.style.display = 'block';
+            }
+        })
+        //get data - inventory table
+        document.getElementById('productsForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
     
             const columnsSelect = document.getElementById('columns');
             const selectedColumns = [...columnsSelect.selectedOptions].map(option => option.value)
             
             const criteriaColumn = document.getElementById('criteriaColumn').value;
             const criteriaConstraint = document.getElementById('criteriaConstraint').value;
-            const table = document.getElementById('table').value; // Get the table name from the form
-            console.log(table)
             
             // Construct the API endpoint URL with query parameters
-            let apiUrl = `/api/mydata?columns=${encodeURIComponent(selectedColumns.join(','))}&table=${encodeURIComponent(table)}`;
+            let apiUrl = `/api/mydata?columns=${encodeURIComponent(selectedColumns.join(','))}&table=inventory`;
             
             if (criteriaColumn && criteriaConstraint) {
                 apiUrl += `&criteriaColumn=${encodeURIComponent(criteriaColumn)}&criteriaConstraint=${encodeURIComponent(criteriaConstraint)}`;
             }
-            console.log(apiUrl)
     
             // Make a GET request to the API endpoint
             fetch(apiUrl)
@@ -62,6 +137,105 @@
                     console.error('Error:', error);
                 });
         });
+        // get data - sales table
+        document.getElementById('salesForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+    
+            const columnsSelect = document.getElementById('columns');
+            const selectedColumns = [...columnsSelect.selectedOptions].map(option => option.value)
+            console.log(selectedColumns)
+            const criteriaColumn = document.getElementById('criteriaColumn').value;
+            const criteriaConstraint = document.getElementById('criteriaConstraint').value;
+            
+            // Construct the API endpoint URL with query parameters
+            let apiUrl = `/api/mydata?columns=${encodeURIComponent(selectedColumns.join(','))}&table=SALES`;
+            
+            if (criteriaColumn && criteriaConstraint) {
+                apiUrl += `&criteriaColumn=${encodeURIComponent(criteriaColumn)}&criteriaConstraint=${encodeURIComponent(criteriaConstraint)}`;
+            }
+    
+            // Make a GET request
+            fetch(apiUrl)
+                .then(response => response.json())  // Parse the JSON response
+                .then(data => {
+                    // Once the JSON data is received, render it on the page
+                    document.getElementById('productsData').innerHTML = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById('customersForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+    
+            const columnsSelect = document.getElementById('columns');
+            const selectedColumns = [...columnsSelect.selectedOptions].map(option => option.value)
+            console.log(selectedColumns);
+            const criteriaColumn = document.getElementById('criteriaColumn').value;
+            const criteriaConstraint = document.getElementById('criteriaConstraint').value;
+            
+            // Construct the API endpoint URL with query parameters
+            let apiUrl = `/api/mydata?columns=${encodeURIComponent(selectedColumns.join(','))}&table=customers`;
+            
+            if (criteriaColumn && criteriaConstraint) {
+                apiUrl += `&criteriaColumn=${encodeURIComponent(criteriaColumn)}&criteriaConstraint=${encodeURIComponent(criteriaConstraint)}`;
+            }
+    
+            // Make a GET request to the API endpoint
+            fetch(apiUrl)
+                .then(response => response.json())  // Parse the JSON response
+                .then(data => {
+                    // Once the JSON data is received, render it on the page
+                    document.getElementById('productsData').innerHTML = JSON.stringify(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        //////////////////DATA INSERTION////////////////////////
+         // Construct request body
+         document.getElementById('insertProductForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            // Extract data from form fields
+            const productID = document.getElementById('productID').value;
+            const category = document.getElementById('category').value;
+            const subCategory = document.getElementById('subCategory').value;
+            const stock = document.getElementById('stock').value;
+
+            // Construct request body
+            const data = {
+                productID: productID,
+                category: category,
+                subCategory: subCategory,
+                stock: stock
+            };
+
+            // Make a POST request to the API endpoint
+            fetch('/api/insert/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle success response
+                console.log('Product inserted successfully:', data);
+                // Optionally, display a success message to the user
+            })
+            .catch(error => {
+                // Handle error response
+                console.error('Error inserting product:', error);
+                // Optionally, display an error message to the user
+            });
+        });
+
+        ////////////////////DELETION////////////////////
+        
     </script>
 </body>
 </html>
