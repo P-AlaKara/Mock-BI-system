@@ -1,0 +1,25 @@
+#header {
+    margin-top: 1rem;
+}
+.stats {
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+}
+.stats_one {
+    background-color: rgb(178, 8, 8);
+}
+.stats_two{
+    background-color: rgb(178, 118, 6);
+}
+.stats_three {
+    background-color: rgb(1, 156, 1);
+}
+.stats_four {
+    background-color: rgb(3, 3, 182);
+}
+.chart {
+    margin-top: 1rem;
+}
+#scatter-chart {
+    margin-right: 0;
+}
