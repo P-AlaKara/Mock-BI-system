@@ -1,7 +1,16 @@
-.stats {
+.stats-cust {
     margin-top: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 17px;
+    padding-bottom: 16px;
+    width: 13rem;
+}
+.cust-stats-row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.cust-row-two{
+    width: 73vw;
 }
 h3 {
     font-size: medium;
@@ -21,12 +30,16 @@ h3 {
     color: white;
     font-size: small;
 }
+.DateInput{
+    background-color: rgb(40, 37, 37);
+    border: 1px solid rgb(69, 68, 68);
+}
 .DateRangePickerInput {
     background-color: rgb(40, 37, 37);
     color: white;
     border-color: #333333;
 }
-.chart {
+.chart-cust {
     padding-top: 4px;
     padding-left: 0;
     padding-right: 0;
@@ -37,13 +50,11 @@ h3 {
 #bar-chart-two{
     margin: 0;
 }
-#line-chart {
-    margin-left: -145px;
-}
 .row {
     margin: 0;
 }
-#pie-chart {
-    margin-left: 650px;
-    margin-top: -250px;
+.cust-row-three {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }

@@ -42,7 +42,7 @@ corporate_consumer = df.groupby('segment').agg(revenue=('price','sum')).reset_in
 fig_pie = px.pie(corporate_consumer, names='segment', values='revenue',
                  color_discrete_map={'Consumer' : 'rgb(3, 3, 182)', 'Corporate' : 'rgb(1, 156, 1)', 'Home Office':'rgb(178, 8, 8)'})
 fig_pie.update_layout(margin=dict(l=10, r=0, t=40, b=0), 
-                      paper_bgcolor='#212121', width=250, height=200,
+                      paper_bgcolor='rgb(40,37,37)', width=269, height=245,
                       title=dict(text='Revenue by Segment', font=dict(family='Arial', color='#f0e8e7')))
 #create the bar chart
 age_bins = [0, 18, 25, 35, 45, 55, 65, 100]
@@ -101,27 +101,34 @@ sidebar = html.Div(
         html.Nav([
         html.Ul([
             html.Li(html.A(children=[DashIconify(icon="ant-design:home-outlined", className='icon'),'Home'], href='../templates/static/index.html', style={'display':'block'})),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='/products-dashboard')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="carbon:settings-check", className='icon'),'Visualization'], href='/'))
+            html.Li(html.A(children=[DashIconify(icon="ant-design:tags-outlined", className='icon'),'Sales Dashboard'], href='http://127.0.0.1:8050/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='http://127.0.0.1:8052/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='http://127.0.0.1:8051/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='http://127.0.0.1:8053/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='http://127.0.0.1:8054/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='http://127.0.0.1:8055/'))
         ], className='nav'),
     ], className='navbar')],
 )
 
 content = html.Div(
     [
-        html.Div(id='header', children=['CUSTOMERS DASHBOARD']),
-        dmc.Divider(label = 'Stats',  labelPosition='center', size=2),
+        html.H1(id='header-prod', children=['CUSTOMERS DASHBOARD']),
+        html.Div( 
+            className='header-icons-prod',
+            children=[
+                dbc.NavLink(children=[DashIconify(icon="mdi:home", className='icon-header-prod'),], href="/"),  
+                dbc.NavLink(children=[DashIconify(icon="mdi:account", className='icon-header-prod'),], href="/"),  
+            ],
+        ),
+        dmc.Divider(className='prod-divider', label = 'Stats',  labelPosition='center', size=2),
         dbc.Row(
             [
                 dbc.Col(
                     [
                         dmc.Group(
                             #position='center',
-                            className='stats stats_one',
+                            className='stats-cust stats_one',
                             spacing='xs',
                             style={'flex-direction':'column'},
                             children=[
@@ -130,13 +137,13 @@ content = html.Div(
                                 dmc.Text(id='totalcust', size='xl', style={'font-family':'IntegralCF-ExtraBold'}),
                             ]
                         )
-                    ]
+                    ], className='cust-stats-col'
                 ),
                 dbc.Col(
                     [
                         dmc.Group(
                             #position='center',
-                            className='stats stats_two',
+                            className='stats-cust stats_two',
                             spacing='xs',
                             style={'flex-direction':'column'},
                             children=[
@@ -145,13 +152,13 @@ content = html.Div(
                                 dmc.Text(id='avgage', size='xl', style={'font-family':'IntegralCF-ExtraBold'}),
                             ]
                         )
-                    ]
+                    ], className='cust-stats-col'
                 ),
                 dbc.Col(
                     [
                         dmc.Group(
                             #position='center',
-                            className='stats stats_three',
+                            className='stats-cust stats_three',
                             spacing='xs',
                             style={'flex-direction':'column'},
                             children=[
@@ -160,13 +167,13 @@ content = html.Div(
                                 dmc.Text(id='avgspend', size='xl', style={'font-family':'IntegralCF-ExtraBold'}),
                             ]
                         )
-                    ]
+                    ], className='cust-stats-col'
                 ),
                 dbc.Col(
                     [
                         dmc.Group(
                             #position='center',
-                            className='stats stats_four',
+                            className='stats-cust stats_four',
                             spacing='xs',
                             style={'flex-direction':'column'},
                             children=[
@@ -175,11 +182,11 @@ content = html.Div(
                                 dmc.Text(id='retention', size='xl', style={'font-family':'IntegralCF-ExtraBold'}),
                             ]
                         )
-                    ]
+                    ], className='cust-stats-col'
                 )
-            ]
+            ], className='cust-stats-row'
         ),
-        dmc.Divider(label = 'Graphs',  labelPosition='center', size=2),
+        dmc.Divider(className='prod-divider', label = 'Graphs',  labelPosition='center', size=2),
         dbc.Row(
             [
                 html.Div(className='grouped-bar-container', children=[
@@ -187,30 +194,30 @@ content = html.Div(
                     date_range_picker
                 ]),
                 bar_chart
-            ]
+            ], className='cust-row-two'
         ),
         dbc.Row(
             [
                 dbc.Col(
                     [
                         html.Div(
-                            id='bar-chart-two', className='chart', children=[dcc.Graph(figure=fig_bar, config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)]
+                            id='bar-chart-two', className='chart-cust', children=[dcc.Graph(figure=fig_bar, config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)]
                         )
                     ]
                 ),
                 dbc.Col(
                     [
                         html.Div(
-                           id='line-chart', className='chart', children=[dcc.Graph(figure=fig_line, config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)]
+                           id='line-chart', className='chart-cust', children=[dcc.Graph(figure=fig_line, config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)]
                         )
                     ]
                 ),
                 html.Div(
-                            id='pie-chart', className='chart', children=[dcc.Graph(figure=fig_pie)]
+                            id='pie-chart', className='chart-cust', children=[dcc.Graph(figure=fig_pie)]
                         )
-            ], className="g-0"
+            ], className="cust-row-three"
         )
-    ]
+    ], className='content'
 )
 
 app.layout = dbc.Container(
@@ -299,4 +306,4 @@ def update_stock(dummy_input_four):
     average_customer_age_months = round(df_customers['age_in_months'].mean())
     return "{:,}".format(average_customer_age_months)
 if __name__ == '__main__':
-    app.run(debug=False, port=8051)
+    app.run(debug=True, port=8051)

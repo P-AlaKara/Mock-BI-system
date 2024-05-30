@@ -1,6 +1,7 @@
 .custom-tabs-container {
-    width: 100%;
+    width: 68vw;
     background-color: #000000;
+    margin: 0 !important;
 }
 .custom-tabs {
     border-top-left-radius: 3px;
@@ -10,24 +11,43 @@
 }
 
 .custom-tab {
-    color: black;
+    color: white;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     border-top: 3px solid transparent !important;
     border-left: 0px !important;
     border-right: 0px !important;
     border-bottom: 0px !important;
-    background-color: black;
-    padding: 12px !important;
     font-family: "system-ui";
     display: flex !important;
     align-items: center;
     justify-content: center;
 }
+.prediction-tab{
+    background-color: red !important;
+}
+.stock-tab{
+    background-color: green !important;
+}
+.clv-tab{
+    background-color: orange !important;
+}
 .custom-tab--selected {
-    color: black;
+    color: white !important;
     box-shadow: 1px 1px 0px white;
     border-left: 1px solid lightgrey !important;
     border-right: 1px solid lightgrey !important;
-    border-top: 3px solid #e36209 !important;
+    border-top: 3px solid white !important;
+}
+#header-analysis{
+    margin-left: 2vw;
+    margin-top: 5px;
+}
+.analysis-divider{
+    width: 74vw;
+}
+.graph-bottom{
+    margin: 0 !important;
+    width: 73vw;
+    color: white;
 }

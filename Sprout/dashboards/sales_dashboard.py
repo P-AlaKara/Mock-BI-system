@@ -1,3 +1,5 @@
+#first-row row --whole of row 1
+#col --all the columns
 # add 2 more graphs related to store locations and profits,revenue etc.
 import dash
 from dash import Dash, html, dcc, callback, Output, Input, dash_table
@@ -9,7 +11,7 @@ import dash_mantine_components as dmc
 
 df = pd.read_csv('modified_sales.csv')
 df.drop(columns=['staff_no', 'staff_name', 'customer_name', 'age', 'productID', 
-                 'age', 'segment'], inplace=True)
+                 'age'], inplace=True)
 top_products_df = df.drop(columns=['product_name', 'customerID', 'date', 'time', 'saleID', 'payment_method', 'county'])
 grouped_category = top_products_df.groupby('sub_category').agg(quantity=('quantity', 'sum'),
                                                                profit=('profit', 'mean')).reset_index()
@@ -17,7 +19,7 @@ county_profit_df = df.groupby('county').agg(profit=('profit', 'mean')).reset_ind
 #new column names for the data table
 new_columns = ['SUBCATEGORY', 'QUANTITY', 'PROFIT']
 #linked stylesheets
-external_stylesheets = ['static/css/sales_styles.css', dbc.themes.DARKLY]
+external_stylesheets = ['assets/sales_styles.css', dbc.themes.DARKLY]
 
 #functionss
 def get_top_products(df, n=10):
@@ -26,31 +28,52 @@ def get_top_products(df, n=10):
     return top_products
 #figures
 figure2=px.pie(county_profit_df, names='county', values='profit', hole=0.2)
-figure2.update_layout(margin=dict(l=40, r=0, t=40, b=0), 
-                      paper_bgcolor='#212121', width=300, height=200, 
+figure2.update_layout(margin=dict(l=40, r=40, t=40, b=0), 
+                      paper_bgcolor='rgb(40, 37, 37)', width=340, height=250, 
                       title=dict(text='Profit by Location', font=dict(family='Arial', color='#f0e8e7')))
+
+fig_bubble = px.scatter(df, x='category', y='county', color='segment')
+fig_bubble.update_layout(
+        plot_bgcolor='rgb(40, 37, 37)',
+        paper_bgcolor='rgb(40, 37, 37)',
+        font_color='white',
+        width=870,
+        height=338,
+        margin=dict(l=5, r=5, t=80, b=5),
+        title=dict(text="Profit by County and Category", font=dict(family='Arial', color='#f0e8e7')),
+        title_x = 0.5
+)
+fig_bubble.update_xaxes(showgrid=True, gridcolor='dimgray')
+fig_bubble.update_yaxes(showgrid=True, gridcolor='dimgray')
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 sidebar = html.Div(
     [
         html.Img(src='assets/logo2.png', className='logo-img'),
-        html.Hr(style={'margin':0}),
+        html.Hr(style={'margin-bottom':0}),
         html.Nav([
         html.Ul([
             html.Li(html.A(children=[DashIconify(icon="ant-design:home-outlined", className='icon'),'Home'], href='../templates/static/index.html', style={'display':'block'})),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='/products-dashboard')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="carbon:settings-check", className='icon'),'Visualization'], href='/'))
+            html.Li(html.A(children=[DashIconify(icon="ant-design:tags-outlined", className='icon'),'Sales Dashboard'], href='http://127.0.0.1:8050/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='http://127.0.0.1:8052/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='http://127.0.0.1:8051/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='http://127.0.0.1:8053/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='http://127.0.0.1:8054/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='http://127.0.0.1:8055/'))
         ], className='nav'),
-    ], className='navbar')],
+    ], className='navbar')], className='sidebar'
 )
 content = html.Div(
     [
         html.H1(id='header-sales', children=['SALES DASHBOARD']),
-        dmc.Divider(label = 'Stats',  labelPosition='center', size=2),
+        html.Div( 
+            className='header-icons',
+            children=[
+                dbc.NavLink(children=[DashIconify(icon="mdi:home", className='icon-header'),], href="/"),  
+                dbc.NavLink(children=[DashIconify(icon="mdi:account", className='icon-header'),], href="/"),  
+            ],
+        ),
+        #dmc.Divider(className='divider', label = 'Stats',  labelPosition='center', size=4),
         dbc.Row(
             [
                 dbc.Col(
@@ -70,7 +93,7 @@ content = html.Div(
                                         dmc.Text('Total Customers', id = 'churn_rate', size='xs', color='white', style={'font-family':'IntegralCF-RegularOblique'})
                                     ]
                                 )
-                            ]),
+                            ], className='stats-col'),
                             dbc.Col([
                                 dmc.Group(
                                     #position='center',
@@ -85,9 +108,9 @@ content = html.Div(
                                         dmc.Text('December Sales', size='xs', color='white', style={'font-family':'IntegralCF-RegularOblique'})
                                     ]
                                 )
-                            ])
-                        ]),
-                        dmc.Divider(label = 'Income',  labelPosition='center', size='xl'),
+                            ], className='stats-col')
+                        ], className='stats-row-1'),
+                        #dmc.Divider(label = 'Income',  labelPosition='center', size='xl'),
                         dbc.Row([
                             dbc.Col([
                                 dmc.Group(
@@ -103,7 +126,7 @@ content = html.Div(
                                         dmc.Text('December Revenue', size='xs', color='white', style={'font-family':'IntegralCF-RegularOblique'})
                                     ]
                                 )
-                            ]),
+                            ], className='stats-col'),
                             dbc.Col([
                                 dmc.Group(
                                     #position='center',
@@ -118,34 +141,34 @@ content = html.Div(
                                         dmc.Text('December Profit', size='xs', color='white', style={'font-family':'IntegralCF-RegularOblique'})
                                     ]
                                 )
-                            ])
-                        ])
-                    ]
+                            ], class_name='stats-col')
+                        ], className='stats-row-2')
+                    ], className='stats-cont'
                 ),
                 dbc.Col(
                     [
-                        html.Div(className='btn btn-outline-light bar-radio content', children=[dcc.RadioItems(options=['profit', 'price', 'quantity'], 
-                                                                                                               value='price', labelStyle={'margin-right': '60px'},
+                        html.Div(className='btn btn-outline-light bar-radio', children=[dcc.RadioItems(options=['profit', 'price', 'quantity'], 
+                                                                                                               value='price', labelStyle={'margin-right': '40px'},
                                                                                                                id='controls-and-radio-item', inline=True)]),
-                        html.Div(className='six-columns content plot-container', children=[dcc.Graph(figure={}, id='controls-and-graph', config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)]),
-                    ]
+                        html.Div(className='six-columns plot-container', children=[dcc.Graph(figure={}, id='controls-and-graph', config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)]),
+                    ], class_name='hist-cont'
                 )
-            ], style={'height': '50vh',
+            ], className='first-row', style={'height': '50vh',
                    'margin-top': '1px', 
                    'margin-bottom': '20px'}
         ),
-        dmc.Divider(label = 'Profits',  labelPosition='center', size='xl'),
+        dmc.Divider(className='divider', label = 'Profits',  labelPosition='center', size='4'),
         dbc.Row(
             [
                 dbc.Col(
                     [
                         html.Div(
-                            id='data-table', className='six-columns content', 
+                            id='data-table', className='six-columns', 
                                 children=[dash_table.DataTable(data=get_top_products(grouped_category).to_dict('records'),
                                                                columns=[{'name': column.replace('_', ' ').upper(), 'id':column} for column in grouped_category.columns], 
                                                                page_size=10, style_data={ 'border': '0px'},
                                                                style_data_conditional=[{'if': {'row_index': 'odd'},'backgroundColor': 'rgb(40, 37, 37)',}])],
-                            title='Top Selling Products', style={'margin-top': '20px'}
+                            title='Top Selling Products', style={'margin-top': '10px'}
                         )
                     ]
                 ),
@@ -156,9 +179,9 @@ content = html.Div(
                         )
                     ]
                 )
-            ],  style={"height": "50vh", 'margin-top': '10px'}
-        )
-    ]
+            ],  className='second-row', style={'margin-top': '10px'}
+        ), 
+    ], className='content'
 )
 
 # App layout
@@ -220,7 +243,7 @@ def update_graph(col_chosen):
         #paper_bgcolor='#212121',
         paper_bgcolor='rgb(40, 37, 37)',
         font_color='white',
-        width=550,
+        width=450,
         height=250,
         margin=dict(l=5, r=5, t=30, b=5),
         yaxis = dict(showgrid=False),

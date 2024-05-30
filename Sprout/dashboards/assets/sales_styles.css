@@ -16,14 +16,27 @@
 }
 body {
     font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
 }
 .logo-img {
-    width: 8rem;
-    height: 8rem;
-    margin-left: 67px;
+    width: 15vw;
+    height: 20vh;
+    margin-left: 60px;
+    border-right: 2rem solid rgb(40, 37, 37);
+    border-left: 2rem solid rgb(40, 37, 37);
+    margin-top: 0.7rem;
+}
+.sidebar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 25vw;
+    height: 100vh;
+    background-color: rgb(40, 37, 37);
+    z-index: 1;
 }
 
-/*body{
+body{
     color: #f0f0f0;
     background-image: linear-gradient(62deg, #212121 0%, #181719 100%);
 }
@@ -33,28 +46,22 @@ body {
 .plot {
     width: 100%;
 }
-.navbar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 20vw;
-    background-color: #303841;
-    z-index: 1;
-    border-right: solid #f0f0f0;
-}
 .content {
-    margin-left: 20vw;
+    margin-left: 23vw;
+    margin-right: 0 !important;
 }
 .navbar ul {
     display:flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     list-style-type: none;
     margin: 0;
 }
 .navbar ul li {
     padding: 10px;
-    margin-top: 20px;
+    margin-top: 1px;
+    margin-left: 2.8rem;
 }
 .navbar ul li a{
     color: #f0f0f0;
@@ -62,7 +69,7 @@ body {
 }
 .six-columns{
     color:black;
-}*/
+}
 .sidebar {
     background-color: rgb(40, 37, 37);
     /*border-right: 1px solid var(--main-white);*/
@@ -83,6 +90,7 @@ body {
     padding: 8px;
     text-align: left;
     font-family: Arial, Helvetica, sans-serif;
+    color: white;
 }
 #data-table tbody td{
     background-color: rgb(40, 37, 37);
@@ -93,11 +101,19 @@ body {
     font-size: small;
 }
 #controls-and-graph {
-   border: 5px solid rgb(40, 37, 37);
-   border-radius: 25px;
+   border: 1px solid rgb(40, 37, 37);
+   border-radius: 10px;
+}
+#controls-and-radio-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.btn{
+    width: 450px;
 }
 #pie-chart-sales {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 ul {
     display: flex;
@@ -122,11 +138,75 @@ nav li a {
 .stats {
     padding-top: 1rem;
     padding-bottom: 1rem;
+    width: 16vw;
+    margin-left: 1px !important;
+    margin-right: 0 !important;
+    height: 23vh;
 }
 #header-sales {
-    font-size: 25px;
+    position: fixed;
+    top: 0;
+    font-size: 20px;
     margin-top: 5px;
     margin-bottom: 5px;
+    font-family: sans-serif;
+    margin-left: 20px;
+    padding-top: 10px;
+    z-index: 5;
+    font-weight: bolder;
+}
+.stats-col{
+    width: 16vw !important;
+    margin: 0 !important;
+}
+.stats-row-1, .stats-row-2{
+    width: 34vw;
+}
+.stats-cont{
+    width: 34vw !important;
+    margin-top: 3.2rem;
+}
+.hist-cont{
+    width: 34vw !important;
+    margin-left: 1.5rem;
+    margin-top: 3.5rem;
+}
+.first-row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.second-row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin-bottom: 5px;
+}
+.divider{
+    width: 76vw;
+    margin-top: 3.6rem;
+}
+.header-icons{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 74vw;
+    position: fixed;
+    top: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgb(40, 37, 37);
+    z-index: 2;
+    box-shadow: 0 2px 0 rgba(69, 67, 67, 0.4);
+}
+.icon-header{
+    width: 4rem !important;
+    color: white;
+    height: 1.5rem !important;
+    margin-right: 40px;
+}
+.last-row{
+    margin: 2px auto;
 }
 /*
 #pie-chart{

@@ -18,7 +18,7 @@ font_import = html.Link(
 external_stylesheets = ['assets/goals_styles.css', dbc.themes.DARKLY]
 
 # Initialize the Dash app
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+app2 = Dash(__name__, external_stylesheets=external_stylesheets)
 
 goals_dic = dict()
 goals_dic_cust = dict()
@@ -169,11 +169,15 @@ form_cust = html.Div([
     ], id='actual-value-cust-container'),
         
     html.H3(className='label-cust-tf', children=["Time Frame"]),
-    dcc.DatePickerSingle(
+    dcc.Dropdown(
         id='time-frame-cust',
-        placeholder='Enter deadline...',
-        min_date_allowed = datetime.today() + timedelta(days=7),
-        style={'margin-bottom': '10px'}
+        options=[
+            {'label': 'Monthly', 'value': 'monthly'},
+            {'label': 'Quarterly', 'value': 'quarterly'},
+            {'label': 'Yearly', 'value': 'yearly'}
+        ],
+        value='global',
+        style={'width': '30rem', 'margin-bottom': '10px'}
     ),
     html.Button('Set Goal', id='submit-button-cust', style={'display':'block'}, n_clicks=0)
 ], id='cust-goal-form', style={'display': 'none', 'position': 'fixed', 'top': 0, 'left': 0, 'width': '100vw', 'height': '100vh', 'backgroundColor': 'rgba(0,0,0,0.5)', 'zIndex': 9999})
@@ -365,21 +369,30 @@ sidebar = html.Div(
         html.Nav([
         html.Ul([
             html.Li(html.A(children=[DashIconify(icon="ant-design:home-outlined", className='icon'),'Home'], href='../templates/static/index.html', style={'display':'block'})),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='/products-dashboard')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="carbon:settings-check", className='icon'),'Visualization'], href='/'))
+            html.Li(html.A(children=[DashIconify(icon="ant-design:tags-outlined", className='icon'),'Sales Dashboard'], href='http://127.0.0.1:8050/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='http://127.0.0.1:8052/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='http://127.0.0.1:8051/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='http://127.0.0.1:8053/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='http://127.0.0.1:8054/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='http://127.0.0.1:8055/'))
         ], className='nav'),
     ], className='navbar')],
 )
 content = html.Div([
-    html.Div(id='header', children=['GOALS DASHBOARD']),
+    html.H1(id='header-prod', children=['GOALS DASHBOARD']),
+        html.Div( 
+            className='header-icons-prod',
+            children=[
+                dbc.NavLink(children=[DashIconify(icon="mdi:home", className='icon-header-prod'),], href="/"),  
+                dbc.NavLink(children=[DashIconify(icon="mdi:account", className='icon-header-prod'),], href="/"),  
+            ],
+        ),
     dmc.Divider(label = 'Set Goals',  labelPosition='center', size=2),
     # Form for setting sales goals
-    html.Button('Set Sales Goal', id='toggle-form', n_clicks=0, className='goal-button sales-button'),
-    html.Button('Set Customers Goal', id='toggle-form-cust', n_clicks=0, className='goal-button cust-button'),
+    html.Div([
+        html.Button('Set Sales Goal', id='toggle-form', n_clicks=0, className='goal-button sales-button'),
+        html.Button('Set Customers Goal', id='toggle-form-cust', n_clicks=0, className='goal-button cust-button'),
+    ], className='goals-buttons'),
     form,
     form_cust,
     # Output for displaying confirmation message
@@ -407,23 +420,24 @@ content = html.Div([
             ], id='goals-container'),
         dbc.Col([
             #graph showing actual vs target
-            html.Div(id='sales-goal-chart', className='chart', children=[dcc.Graph(figure=fig_sales)])
+            html.Div(id='sales-goal-chart', className='chart', children=[dcc.Graph(figure=fig_sales, 
+                                                                                   config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)])
         ])
-    ]),
+    ], className='goal-one-row'),
     dbc.Row(
         [
             dbc.Col(
                 [
                     dmc.Group(
                         #position='center',
-                        className='goal',
+                        className='goal goal_one',
                         spacing='xs',
                         style={'flex-direction':'column', 'jusfity-content':'center'},
                         children=[
                             dmc.Group(children=[DashIconify(icon="clarity:date-line", id='globe-icon-cust', color="orange", width=24, style={"margin-top": "3rem"}),
                                                 dmc.Text('Quarterly Customers Target', id='target-text-cust', size='lg', style={'font-family':'IntegralCF-ExtraBold', 'margin-top':'3rem'})]),
                             dmc.Text(f'{targetvalue_cust}', size='xl', color='red', style={'font-family':'IntegralCF-RegularOblique', 'font-size':'2rem', 'color':'red'}),
-                            dmc.Group(children=[DashIconify(icon="fa-chart-pie", color="orange", width=24),
+                            dmc.Group(children=[DashIconify(icon="mdi:office-building", color="orange", width=24),
                                                 dmc.Text('Scope: Corporate Segment', id='target-text-two-cust', size='lg', style={'font-family':'IntegralCF-ExtraBold'})]),
                             dmc.Group(children=[DashIconify(icon="mdi:counter", color="orange", width=24),
                                                 dmc.Text('Type: Volume', id='target-text-three-cust', size='lg', style={'font-family':'IntegralCF-ExtraBold'})])
@@ -433,14 +447,15 @@ content = html.Div([
             ),
             dbc.Col(
                 [
-                    html.Div(id='cust-goal-chart', className='chart', children=[dcc.Graph(figure=fig_cust)])
+                    html.Div(id='cust-goal-chart', className='chart', children=[dcc.Graph(figure=fig_cust, 
+                                                                                          config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']},)])
                 ]
             )
-        ]
+        ], className='goal-two-col'
     )
-]) 
+], className='content-goals') 
 # Define the layout of the app
-app.layout = dbc.Container([
+app2.layout = dbc.Container([
     dbc.Row(
         [
             dbc.Col(sidebar, width=3, className='sidebar'),
@@ -452,7 +467,7 @@ app.layout = dbc.Container([
 
 ######################################CALLBACKS#######################################
 #show or hide form
-@app.callback(
+@app2.callback(
     Output('goal-form', 'style'),
     Input('toggle-form', 'n_clicks'),
 )
@@ -462,7 +477,7 @@ def toggle_form(n_clicks):
     else:
         return {'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'center', 'alignItems': 'center'}
 #show or hide customers form
-@app.callback(
+@app2.callback(
     Output('cust-goal-form', 'style'),
     Input('toggle-form-cust', 'n_clicks'),
 )
@@ -473,7 +488,7 @@ def toggle_form(n_clicks):
         return {'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'center', 'alignItems': 'center'}
 
 # Define callback to show/hide scope-specific input based on user selection
-@app.callback(
+@app2.callback(
     Output('location-input', 'style'),
     Output('category-input', 'style'),
     Output('segment-input', 'style'),
@@ -500,7 +515,7 @@ def show_hide_scope_specific_input(value):
     
     return location_style, category_style, segment_style, sales_type_style, actual_value_style
 #customers form
-@app.callback(
+@app2.callback(
     Output('location-input-cust', 'style'),
     Output('segment-input-cust', 'style'),
     Output('actual-value-cust', 'style'),
@@ -520,7 +535,7 @@ def show_hide_scope_specific_input(value):
     return location_style, segment_style, actual_value_style
 
 # Define callback to handle form submission
-@app.callback(
+@app2.callback(
     Output('output-message', 'children'),
     [Input('submit-button', 'n_clicks')],
     [dash.dependencies.State('target-scope', 'value'),
@@ -576,15 +591,15 @@ def update_output(n_clicks, target_scope, location, category, segment, sales_typ
         return ""   #change this code to avoid program crashing
 
 #customers form
-@app.callback(
+@app2.callback(
     Output('output-message-cust', 'children'),
     [Input('submit-button-cust', 'n_clicks')],
     [dash.dependencies.State('target-scope-cust', 'value'),
      dash.dependencies.State('location-input-cust', 'value'),
      dash.dependencies.State('segment-input-cust', 'value'),
      dash.dependencies.State('actual-value-cust', 'value'),
-     dash.dependencies.State('time-frame-cust', 'date')])
-def update_output(n_clicks, target_scope, location, segment, actual_value, time_frame):
+     dash.dependencies.State('time-frame-cust', 'value')])
+def update_output(n_clicks, target_scope, location, segment, actual_value, time_frame_cust):
     if n_clicks > 0:
         message = "Customer goals set for the following:\n"
         if target_scope == 'global':
@@ -605,8 +620,8 @@ def update_output(n_clicks, target_scope, location, segment, actual_value, time_
         if not actual_value:
             return "Please enter the actual value."
         
-        message += f"- Goal: Increase customer numbers to {actual_value} before {time_frame}\n"
-        new_data = {'type':'volume', 'targetscope':target_scope, 'targetvalue':actual_value, 'deadline':time_frame}
+        message += f"- Goal: Increase customer numbers to {actual_value} {time_frame_cust}\n"
+        new_data = {'type':'volume', 'targetscope':target_scope, 'targetvalue':actual_value, 'period':time_frame_cust}
         
         goals_dic_cust.update(new_data)
         df_sales = pd.DataFrame(goals_dic_cust, index=[0])
@@ -617,4 +632,4 @@ def update_output(n_clicks, target_scope, location, segment, actual_value, time_
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app2.run(debug=True, port=8053)

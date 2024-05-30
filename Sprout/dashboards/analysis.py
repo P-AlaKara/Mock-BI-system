@@ -47,7 +47,7 @@ fig_line_weekly.update_layout(
         paper_bgcolor='rgb(40, 37, 37)',
         font_color='white',
         width=870,
-        height=550,
+        height=450,
         margin=dict(l=5, r=5, t=80, b=5),
         title=dict(text='Daily Forecast', font=dict(family='Arial', color='#f0e8e7')),
         title_x = 0.5
@@ -64,7 +64,7 @@ fig_cumulative_line.update_layout(
         paper_bgcolor='rgb(40, 37, 37)',
         font_color='white',
         width=870,
-        height=538,
+        height=450,
         margin=dict(l=5, r=5, t=80, b=5),
         title=dict(text='Cumulative Forecast', font=dict(family='Arial', color='#f0e8e7')),
         title_x = 0.5
@@ -100,7 +100,7 @@ fig_stock_out.update_layout(
         paper_bgcolor='rgb(40, 37, 37)',
         font_color='white',
         width=870,
-        height=520,
+        height=450,
         margin=dict(l=5, r=5, t=80, b=5),
         title=dict(text='Stock Out Risk', font=dict(family='Arial', color='#f0e8e7')),
         title_x = 0.5
@@ -127,7 +127,7 @@ fig_clv.update_layout(
         paper_bgcolor='rgb(40, 37, 37)',
         font_color='white',
         width=870,
-        height=520,
+        height=450,
         margin=dict(l=5, r=5, t=80, b=5),
         title=dict(text='Lifetime Values', font=dict(family='Arial', color='#f0e8e7')),
         title_x = 0.5
@@ -172,60 +172,69 @@ table_data = [
 
 #link external stylesheets
 external_stylesheets = ['static/css/analysis.css', dbc.themes.DARKLY]
-# Create the Flask server
-server = flask.Flask(__name__)
 #initialize dash
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+app1 = Dash(__name__, external_stylesheets=external_stylesheets)
 sidebar = html.Div(
     [
         html.Img(src='assets/logo2.png', className='logo-img'),
-        html.Hr(style={'margin':0}),
+        html.Hr(className='hr-analysis', style={'margin':0}),
         html.Nav([
         html.Ul([
             html.Li(html.A(children=[DashIconify(icon="ant-design:home-outlined", className='icon'),'Home'], href='../templates/static/index.html', style={'display':'block'})),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='/products-dashboard')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='/')),
-            html.Li(html.A(children=[DashIconify(icon="carbon:settings-check", className='icon'),'Visualization'], href='/'))
+            html.Li(html.A(children=[DashIconify(icon="ant-design:tags-outlined", className='icon'),'Sales Dashboard'], href='http://127.0.0.1:8050/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:database-outlined", className='icon'),'Products Dashboard'], href='http://127.0.0.1:8052/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:team-outlined", className='icon'),'Customers Dashboard'], href='http://127.0.0.1:8051/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:aim-outlined", className='icon'),'Goals'], href='http://127.0.0.1:8053/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:stock-outlined", className='icon'),'Analysis'], href='http://127.0.0.1:8054/')),
+            html.Li(html.A(children=[DashIconify(icon="ant-design:search-outlined", className='icon'),'Queries'], href='http://127.0.0.1:8055/'))
         ], className='nav'),
     ], className='navbar')],
 )
 content = html.Div(
     [
+        html.Div(id='header-analysis', children=['ANALYSIS DASHBOARD']),
+        html.Div( 
+            className='header-icons-prod',
+            children=[
+                dbc.NavLink(children=[DashIconify(icon="mdi:home", className='icon-header-prod'),], href="/"),  
+                dbc.NavLink(children=[DashIconify(icon="mdi:account", className='icon-header-prod'),], href="/"),  
+            ],
+        ),
+        dmc.Divider(className='analysis-divider', label = 'Analysis',  labelPosition='center', size=2),
         dcc.Tabs(parent_className='custom-tabs', className='custom-tabs-container', children=[
-            dcc.Tab(label='Demand Prediction', className='custom-tab', selected_className='custom-tab--selected', children=[
+            dcc.Tab(label='Demand Prediction', className='custom-tab prediction-tab', selected_className='custom-tab--selected', children=[
                 html.Div([
                     dcc.Graph(
                         figure=fig_cumulative_line,
                         config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']}
                     ),
-                    html.Hr(),
+                    html.Hr(className='prod-divider'),
                     dcc.Graph(
                         figure=fig_line_weekly, 
                         config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']}
                     )
                 ])
             ]),
-            dcc.Tab(label='Stock Out Risk', className='custom-tab', selected_className='custom-tab--selected', children=[
-                html.Div(
+            dcc.Tab(label='Stock Out Risk', className='custom-tab stock-tab', selected_className='custom-tab--selected', children=[
+                html.Div([
                     dcc.Graph(
                         figure=fig_stock_out,
                         config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']}
-                    )
+                    ),
+                    html.Hr(className='graph-bottom')
+                ]
                 )
             ]),
-            dcc.Tab(label='CLV analysis', className='custom-tab', selected_className='custom-tab--selected', children=[
+            dcc.Tab(label='CLV analysis', className='custom-tab clv-tab', selected_className='custom-tab--selected', children=[
                 dcc.Graph(
                     figure=fig_clv,
                     config={"displaylogo": False,'modeBarButtonsToRemove': ['pan2d','lasso2d','autoScale2d','resetScale2d','select2d']}
                 )
             ]),
         ])
-    ]
+    ], className='content'
 )
-app.layout = dbc.Container(
+app1.layout = dbc.Container(
     [
         dbc.Row(
             [
@@ -238,4 +247,4 @@ app.layout = dbc.Container(
 )
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8050)
+    app1.run(debug=True, port=8054)
